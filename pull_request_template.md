@@ -1,32 +1,48 @@
-# Description
+# Sample PR template
 
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
+## Description:
 
-Fixes # (issue)
+This PR addresses issue #`<NUMBER>`.
 
-## Type of change
+_If relevant, include screenshots of the *before* state of the application/test suite/whatever, which demonstrates the issue needing to be fixed._
 
-Please delete options that are not relevant.
+**Before:**
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+`![semantic description of "before" screenshot](link to screenshot hosted somewhere stable like imgur, etc)`
 
-# How Has This Been Tested?
+The changes made to the codebase in this PR:
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
+* List the changes made
+  * as specifically as possible.
+* Assume that the reader
+  * is not familiar with the entire codebase
 
-- [ ] Test A
-- [ ] Test B
+```
+Include relevant code snippets if applicable - do not paste in the entire PR's changes;
+merely highlight some key changes if they are unusual or especially relevant.
+```
+**After:**
 
-# Checklist:
+`![semantic description of "after" screenshot](link to screenshot hosted somewhere stable like imgur, etc)`
 
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published in downstream modules
+## Testing 
+
+These changes affect the following tests:
+
+`![Screenshot of test suite output](link to screenshot hosted somewhere stable like imgur, etc)`
+
+As a result, issue #`<NUMBER>` was created to refactor those tests: `[Issue #<NUMBER>](link to the github/waffle/etc issue)`
+
+_ALTERNATIVELY, if no tests are adversely affected:_
+
+These changes did not affect the existing test suite.
+
+`![Screenshot of unaffected "after" test suite output](link to screenshot hosted somewhere stable like imgur, etc)`
+
+## Requests for review
+
+Areas of concern:
+
+* List areas you would like reviewers to focus on
+* Ex: The function beginning on line 72 is not pure; would love to have suggestions for improvement
+* This is your opportunity to solicit particular attention for areas of code you are concerned about

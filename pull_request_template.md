@@ -1,4 +1,4 @@
-# Sample PR template
+# Pull Request Template
 
 ## Description:
 

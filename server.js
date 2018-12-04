@@ -165,8 +165,21 @@ app.get('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 		}));
 })
 
+app.put('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
+	const newName = request.body.cafe_name;
+	const { id } = request.params
+	const cafe = database.where('id', id).select()
+	const oldName = cafe.cafe_name
 
+	if(!cafe) return response.status(404).json({ error: `cafe with id of ${id} was not found.`});
+	else if (!newName) return response.status(422).json({ error: 'No cafe name provided' });
 
+	database.where('cafe_name', oldName).update('cafe_name', newName)
+
+	response.status(202).json({
+		message: `Edit successful.  Cafe with is of ${id} name changed from  ${oldName} to ${newName}.`
+	})
+})
 
 
 app.use((request, response, next) => {

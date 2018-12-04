@@ -57,7 +57,7 @@ Feature checklist can be found here [here](http://frontend.turing.io/projects/by
 
 ## Database Schema Wireframe
 Recharge API has a one-to-many relationship between recharging stations and cafes.
-![An illustration of the database schema](https://na.com "Database schema")
+![An illustration of the database schema](https://raw.githubusercontent.com/colehart/BYOBackend/master/public/assets/images/rechargeSchema.png "Database schema")
 
 
 ## This is a partenered project designed and coded by Alexander Ela and Cole Hart.

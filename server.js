@@ -181,6 +181,17 @@ app.put('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 	})
 })
 
+app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
+	const { id } = request.params
+	database('cafes').where('id', id).delete()
+		.then(cafe => response.status(200).json({
+				cafe,
+				message: `Cafe ${id} has been deleted.` 
+		}))
+		.catch(error => response.status(500).json({
+				error: `Error deleting station: ${error.message}`
+		}))
+})
 
 app.use((request, response, next) => {
 	response.status(404).send('Sorry, the path you entered does not exist.')

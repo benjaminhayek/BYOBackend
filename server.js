@@ -106,7 +106,7 @@ app.delete('/api/v1/stations/:station_id', (request, response) => {
 app.get('/api/v1/stations/:station_id/cafes', (request, response) => {
 	const { id } = request.params
 
-	database('cafes').where('staation_id', station_id).select()
+	database('cafes').where('station_id', station_id).select()
 		.then(cafes => response.status(200).json(cafes))
 		.catch(error => response.status(500).json({
 			error: error.message
@@ -188,7 +188,7 @@ app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 	database('cafes').where('id', cafe_id).delete()
 		.then(cafe => response.status(200).json({
 				cafe,
-				message: `Cafe ${cafe_sid} has been deleted.` 
+				message: `Cafe ${cafe_id} has been deleted.` 
 		}))
 		.catch(error => response.status(500).json({
 				error: `Error deleting cafe: ${error.message}`

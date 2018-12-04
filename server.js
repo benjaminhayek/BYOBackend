@@ -104,14 +104,16 @@ app.delete('/api/v1/stations/:station_id', (request, response) => {
 // Cafe endpoints
 
 app.get('/api/v1/stations/:station_id/cafes', (request, response) => {
-	database('cafes').select()
+	const { id } = request.params
+
+	database('cafes').where('staation_id', station_id).select()
 		.then(cafes => response.status(200).json(cafes))
 		.catch(error => response.status(500).json({
 			error: error.message
 		}));
 })
 
-app.post('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
+app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 	const cafe = request.body;
 
 	for(let requiredParam of [
@@ -128,7 +130,7 @@ app.post('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 		if(!cafe[requiredParam]) {
 			return response.status(422).json({
 				error: `Expected format: {
-					station_id: <Number>,
+					station_id: <Integer>,
 					cafe_name: <String>,
 					street_address: <String>, 
 					city: <String>, 
@@ -136,7 +138,7 @@ app.post('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 					zip_code: <String>,
 					formatted_address: <String>, 
 					cross_street: <String>, 
-					distance_in_meters: <String> }.  
+					distance_in_meters: <Integer> }.  
 
 					You're missing the ${requiredParam} property.`
 			})
@@ -146,7 +148,7 @@ app.post('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 	database('cafes').insert(cafe, 'id')
 		.then(cafeIds => response.status(201).json({
 			id: cafeIds[0],
-			message: `Project "${cafe.cafe_name}" successfully created!`
+			message: `Cafe "${cafe.cafe_name}" successfully created!`
 		}))
 		.catch(error => response.status(500).json({
 			error: error.message
@@ -177,19 +179,19 @@ app.put('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 	database.where('cafe_name', oldName).update('cafe_name', newName)
 
 	response.status(202).json({
-		message: `Edit successful.  Cafe with is of ${id} name changed from  ${oldName} to ${newName}.`
+		message: `Edit successful.  Cafe with id of ${cafe_id} name changed from  ${oldName} to ${newName}.`
 	})
 })
 
 app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
-	const { id } = request.params
-	database('cafes').where('id', id).delete()
+	const { cafe_id } = request.params
+	database('cafes').where('id', cafe_id).delete()
 		.then(cafe => response.status(200).json({
 				cafe,
-				message: `Cafe ${id} has been deleted.` 
+				message: `Cafe ${cafe_sid} has been deleted.` 
 		}))
 		.catch(error => response.status(500).json({
-				error: `Error deleting station: ${error.message}`
+				error: `Error deleting cafe: ${error.message}`
 		}))
 })
 

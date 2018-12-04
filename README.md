@@ -30,7 +30,7 @@ Recharge API on Heroku: [https://recharge-api.herokuapp.com/](https://recharge-a
 GET /api/v1/stations // get all stations
 GET /api/v1/stations/:station_id // get a particular station
 POST/api/v1/stations/:station_id/  // create a new station
-PUT/api/v1/stations/:station_id/  // edit a station
+PUT/api/v1/stations/:station_id/  // edit an existing station
 DELETE /api/v1/stations/:station_id/  // delete a station
 ```
 #### Cafes
@@ -38,7 +38,7 @@ DELETE /api/v1/stations/:station_id/  // delete a station
 GET /api/v1/stations/:station_id/cafes // get all cafes
 GET /api/v1/stations/:station_id/cafes/:cafe_id  // get a specific cafe
 POST /api/v1/stations/:station_id/cafes/:cafe_id  // create a new cafe
-PUT /api/v1/stations/:station_id/cafes/:cafe_id  // edit a cafe
+PUT /api/v1/stations/:station_id/cafes/:cafe_id  // edit an existing cafe
 DELETE /api/v1/cafes/:cafe_id  // delete a cafe
 ```
 

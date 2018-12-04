@@ -36,19 +36,7 @@ app.post('/api/v1/stations', (request, response) => {
 		]) {
 		if (!station[requiredParam]) {
 			return response.status(422).json({
-				error: `Expected format: {
-					station_name: <String>,
-					station_phone: <String>,
-					street_address: <String>,
-					city: <String>,
-					state: <String>,
-					zip_code: <String>,
-					latitude: <Float>,
-					longitude: <Float>,
-					intersection_directions: <String>,
-					access_days_time: <String> }.
-
-					You're missing the ${requiredParam} property.`
+				error: `Expected format: { station_name: <String>, station_phone: <String>, street_address: <String>, city: <Strin longitude: <Float>, intersection_directions: <String>, access_days_time: <String> }. You're missing the ${requiredParam} property.`
 			})
 		}
 	}
@@ -73,20 +61,19 @@ app.get('/api/v1/stations/:station_id', (request, response) => {
 		}));
 })
 
-app.put('/api/v1/stations/:station_id', (request, response) => {
+app.put('/api/v1/stations/:station_id', async (request, response) => {
 	const newName = request.body.station_name;
 	const { station_id } = request.params
-	const station = database.where('id', station_id).select()
-	const oldName = station.station_name
+	const station = await database('stations').where('id', station_id).select()
+	const oldName = station[0].station_name
 
 	if(!station) return response.status(404).json({ error: `station with id of ${station_id} was not found.`});
 	else if (!newName) return response.status(422).json({ error: 'No station name provided' });
 
-	database.where('station_name', oldName).update('station_name', newName)
-
-	response.status(202).json({
-		message: `Edit successful. Station with id of ${station_id} name changed from ${oldName} to ${newName}.`
-	})
+	database('stations').where('station_name', oldName).update('station_name', newName)
+		.then(() => response.status(202).json({
+			message: `Edit successful. Station with id of ${station_id} name changed from ${oldName} to ${newName}.`
+		}))
 })
 
 app.delete('/api/v1/stations/:station_id', (request, response) => {
@@ -129,18 +116,7 @@ app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 		]) {
 		if(!cafe[requiredParam]) {
 			return response.status(422).json({
-				error: `Expected format: {
-					station_id: <Integer>,
-					cafe_name: <String>,
-					street_address: <String>,
-					city: <String>,
-					state: <String>,
-					zip_code: <String>,
-					formatted_address: <String>,
-					cross_street: <String>,
-					distance_in_meters: <Integer> }.
-
-					You're missing the ${requiredParam} property.`
+				error: `Expected format: {station_id: <Integer>, cafe_name: <String>, street_address: <String>, city: <String>, state: <String>, zip_code: <String>, formatted_address: <String>, cross_street: <String>, distance_in_meters: <Integer> }. You're missing the ${requiredParam} property.`
 			})
 		}
 	}
@@ -155,13 +131,11 @@ app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 		}))
 })
 
-
-
 app.get('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 	const { cafe_id, station_id } = request.params
 	database('cafes').where({
 		'id': cafe_id,
-		'station_id': station_id
+		station_id
 	}).select()
 		.then(cafes => response.status(200).json(cafes))
 		.catch(error => response.status(500).json({
@@ -169,27 +143,28 @@ app.get('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 		}));
 })
 
-app.put('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
+app.put('/api/v1/stations/:station_id/cafes/:cafe_id', async (request, response) => {
 	const newName = request.body.cafe_name;
-	const { cafe_id } = request.params
-	const cafe = database.where('id', cafe_id).select()
-	const oldName = cafe.cafe_name
+	const { cafe_id, station_id } = request.params
+	const cafe = await database('cafes').where({
+		'id': cafe_id,
+		station_id
+	}).select()
+	const oldName = cafe[0].cafe_name
 
 	if(!cafe) return response.status(404).json({ error: `cafe with id of ${id} was not found.`});
 	else if (!newName) return response.status(422).json({ error: 'No cafe name provided' });
 
-	database.where('cafe_name', oldName).update('cafe_name', newName)
-
-	response.status(202).json({
-		message: `Edit successful.  Cafe with id of ${cafe_id} name changed from  ${oldName} to ${newName}.`
-	})
+	database('cafes').where('cafe_name', oldName).update('cafe_name', newName)
+		.then(cafe => response.status(202).json({
+			cafe,
+			message: `Edit successful.  Cafe with id of ${cafe_id} name changed from  ${oldName} to ${newName}.`}))
 })
 
 app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 	const { cafe_id } = request.params
 	database('cafes').where('id', cafe_id).delete()
-		.then(cafe => response.status(200).json({
-				cafe,
+		.then(() => response.status(200).json({
 				message: `Cafe ${cafe_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
@@ -200,8 +175,8 @@ app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 app.delete('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
 	const { cafe_id, station_id } = request.params
 	database('cafes').where({
-		'id', cafe_id,
-		'station_id': station_id
+		'id': cafe_id,
+		station_id
 	}).delete()
 		.then(cafe => response.status(200).json({
 				cafe,

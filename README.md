@@ -18,7 +18,7 @@ Recharge API on Heroku: [https://recharge-api.herokuapp.com/](https://recharge-a
 * `npm start`
 
 #### Create Postgres Database and Run Migrations
-*  `psql CREATE DATABASE rechargeables`
+* `psql CREATE DATABASE rechargeables`
 
 * `knex migrate:latest`
 

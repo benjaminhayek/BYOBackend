@@ -4,49 +4,72 @@ import * as APIKey from './APIKeys.js'
 export const fetchStations = async (zipCode) => {
 	const url = `https://developer.nrel.gov/api/alt-fuel-stations/v1.json?access=public&status=E&fuel_type=ELEC&zip=${zipCode}&api_key=${APIKey.stationKey}&format=JSON`;
 	const stationData = await API.fetchData(url);
-	const stationResults = formatStationData(stationData.fuel_stations);
+	const stationResults = await formatStationData(stationData.fuel_stations);
+	console.log(stationResults)
 	return stationResults;
 }
 
-export const formatStationData = (stations) => {
-	const stationPromises = stations.map(station => {
+export const formatStationData = async (stations) => {
+	const stationPromises = stations.map(async station => {
+		const {
+			station_name,
+			station_phone,
+			latitude,
+			longitude,
+			street_address,
+			city,
+			state,
+			zip,
+			intersection_directions,
+			access_days_time
+		} = station
+
 		return {
-	    station_name: station.station_name,
-	    station_phone: station.station_phone,
-	    latitude: station.latitude,
-	    longitude: station.longitude,
-	    street_address: station.street_address,
-	    city: station.city,
-	    state: station.state,
-	    zip_code: station.zip_code,
-	    intersection_directions: station.intersection_directions,
-	    access_days_time: station.access_days_time,
-	    cafes: fetchCafes(`${station.latitude},${station.longitude}`)
+	    station_name: station_name,
+	    station_phone: station_phone,
+	    latitude: latitude,
+	    longitude: longitude,
+	    street_address: street_address,
+	    city: city,
+	    state: state,
+	    zip_code: zip,
+	    intersection_directions: intersection_directions,
+	    access_days_time: access_days_time,
+	    cafes: await fetchCafes(`${latitude},${longitude}`)
 		}
 	});
-	return stationPromises;
-}
+	return Promise.all(stationPromises);
+};
 
-export const fetchCafes = (latitudeLongitude) => {
-	const url = `https://api.foursquare.com/v2/venues/search?client_id=${APIKey.cafeId}&client_secret=${APIKey.cafeSecret}&v=20180323&limit=50&ll=${latitudeLongitude}&query=coffee'&radius=1609`
-	const cafeData = await API.fetchData(url)
-	const cafeResults = formatCafeData(cafeData.response.venues)
-	return cafeResults
+export const fetchCafes = async (latitudeLongitude) => {
+	const url = `https://api.foursquare.com/v2/venues/search?client_id=${APIKey.cafeId}&client_secret=${APIKey.cafeSecret}&v=20180323&limit=50&ll=${latitudeLongitude}&query=coffee'&radius=1609`;
+	const cafeData = await API.fetchData(url);
+	const cafeResults = formatCafeData(cafeData.response.venues);
+	return cafeResults;
 }
 
 export const formatCafeData = (cafes) => {
 	const cafePromises = cafes.map(cafe => {
+		const {
+			address,
+			city,
+			state,
+			postalCode,
+			crossStreet,
+			formattedAddress,
+			distance
+		} = cafe.location
+
 		return {
-		  cafe_name: cafe.cafe_name,
-      street_address: cafe.street_address,
-      city: cafe.city,
-      state: cafe.state,
-      zip_code: cafe.zip_code,
-      cross_street: cafe.cross_street,
-      formatted_address: cafe.formatted_address,
-      distance_in_meters: cafe.distance_in_meters,
-      station_id: 
+		  cafe_name: cafe.name,
+      street_address: address,
+      city: city,
+      state: state,
+      zip_code: postalCode,
+      cross_street: crossStreet,
+      formatted_address: `${formattedAddress[0]}, ${formattedAddress[1]}, ${formattedAddress[2]}`,
+      distance_in_meters: distance,
 		}
-	})
-	return cafePromises
-}
+	});
+	return Promise.all(cafePromises);
+};

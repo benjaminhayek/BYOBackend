@@ -42,7 +42,7 @@ export const formatStationData = async (stations) => {
 };
 
 export const fetchCafes = async (latitudeLongitude) => {
-	const url = `https://api.foursquare.com/v2/venues/search?client_id=${APIKey.cafeId}&client_secret=${APIKey.cafeSecret}&v=20180323&limit=31&ll=${latitudeLongitude}&query=coffee'&radius=1609`;
+	const url = `https://api.foursquare.com/v2/venues/search?client_id=${APIKey.cafeId}&client_secret=${APIKey.cafeSecret}&v=20180323&limit=3&ll=${latitudeLongitude}&query=coffee'&radius=805`;
 	const cafeData = await API.fetchData(url);
 	const cafeResults = formatCafeData(cafeData.response.venues);
 	return cafeResults;

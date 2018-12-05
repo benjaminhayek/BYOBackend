@@ -44,7 +44,7 @@ app.post('/api/v1/stations', (request, response) => {
 	database('stations').insert(station, 'id')
 		.then(stationIds => response.status(201).json({
 			id: stationIds[0],
-			message: `Project "${station.station_name}" successfully created!`
+			message: `Station "${station.station_name}" successfully created!`
 		}))
 		.catch(error => response.status(500).json({
 			error: error.message

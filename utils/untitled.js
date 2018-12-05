@@ -47,8 +47,6 @@ const fetchCafes = async (latitudeLongitude) => {
 
 const formatCafeData = (cafes) => {
 	const cafePromises = cafes.map(cafe => {
-		// console.log(cafe)
-
 		const {
 			address,
 			city,

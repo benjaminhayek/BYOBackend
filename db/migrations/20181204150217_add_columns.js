@@ -9,7 +9,9 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropColumn('intersection_directions'),
-    knex.schema.dropColumn('access_days_time')
+    knex.schema.table('stations', table => {
+      table.dropColumn('access_days_time'),
+      table.dropColumn('intersection_directions')
+    })
   ])
 };

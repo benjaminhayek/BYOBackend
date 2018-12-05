@@ -194,3 +194,5 @@ app.use((request, response, next) => {
 app.listen(app.get('port'), () => {
 	console.log(`app is running on ${app.get('port')}`)
 })
+
+module.exports = app

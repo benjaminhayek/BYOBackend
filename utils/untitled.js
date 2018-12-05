@@ -1,7 +1,4 @@
-import * as API from './API.js';
-import * as APIKey from './APIKeys.js'
-
-export const fetchStations = async (zipCode) => {
+const fetchStations = async (zipCode) => {
 	const url = `https://developer.nrel.gov/api/alt-fuel-stations/v1.json?access=public&status=E&fuel_type=ELEC&zip=${zipCode}&api_key=${APIKey.stationKey}&format=JSON`;
 	const stationData = await API.fetchData(url);
 	const stationResults = await formatStationData(stationData.fuel_stations);
@@ -9,7 +6,7 @@ export const fetchStations = async (zipCode) => {
 	return stationResults;
 }
 
-export const formatStationData = async (stations) => {
+const formatStationData = async (stations) => {
 	const stationPromises = stations.map(async station => {
 		const {
 			station_name,
@@ -41,15 +38,17 @@ export const formatStationData = async (stations) => {
 	return Promise.all(stationPromises);
 };
 
-export const fetchCafes = async (latitudeLongitude) => {
+const fetchCafes = async (latitudeLongitude) => {
 	const url = `https://api.foursquare.com/v2/venues/search?client_id=${APIKey.cafeId}&client_secret=${APIKey.cafeSecret}&v=20180323&limit=31&ll=${latitudeLongitude}&query=coffee'&radius=1609`;
 	const cafeData = await API.fetchData(url);
 	const cafeResults = formatCafeData(cafeData.response.venues);
 	return cafeResults;
 }
 
-export const formatCafeData = (cafes) => {
+const formatCafeData = (cafes) => {
 	const cafePromises = cafes.map(cafe => {
+		// console.log(cafe)
+
 		const {
 			address,
 			city,

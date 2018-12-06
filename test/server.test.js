@@ -194,7 +194,7 @@ describe('Server file', () => {
         .get('/api/v1/stations/2/cafes')
         .end((error, response) => {
           const result = response.body.length
-          const expected = 4
+          const expected = 3
 
           expect(error).to.be.null;
           expect(response).to.have.status(200);
@@ -213,7 +213,7 @@ describe('Server file', () => {
         .end((error, response) => {
           expect(error).to.be.null;
           expect(response).to.have.status(201);
-          expect(response.body.id).to.equal(8);
+          expect(response.body.id).to.equal(7);
           expect(response.body.message).to.equal(successMessage)
           done()
         })

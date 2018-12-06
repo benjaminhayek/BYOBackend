@@ -6,7 +6,7 @@ const expect = chai.expect;
 const app = require('../server');
 const config = require('../knexfile')['test'];
 const database = require('knex')(config);
-const { mockStations, mockCafes } = require('./testMocks');
+const { testMockStations, testMockCafes } = require('./testMocks');
 
 chai.use(chaiHttp)
 
@@ -25,7 +25,7 @@ describe('Server file', () => {
         .then(() => done())
     })
 
-    it('GET sends back a 200 status code', done => {
+    it('GET sends back a 200 status code and correct response object', done => {
       chai.request(app)
         .get('/api/v1/stations')
         .end((error, response) => {
@@ -34,8 +34,8 @@ describe('Server file', () => {
         })
     })
 
-    it('POST sends back 201 status code', done => {
-      const newStation = mockStations[0]
+    it('POST sends back 201 status code and correct response object', done => {
+      const newStation = testMockStations[0]
 
       chai.request(app)
         .post('/api/v1/stations')
@@ -47,7 +47,17 @@ describe('Server file', () => {
           expect(response.body.message).to.equal('Station "Test Station 1" successfully created!');
           done();
         })
+    })
 
+    it('sends 404 for bad path', done => {
+      chai.request(app)
+        .get('/api/v1/statios')
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.text).to.equal('Sorry, the path you entered does not exist.');
+          done();
+        })
     })
   })
 })

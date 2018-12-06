@@ -1,4 +1,4 @@
-const mockCafes = [
+const testMockCafes = [
   {
     station_id: 1,
     cafe_name: 'Test Cafe 1',
@@ -67,7 +67,7 @@ const mockCafes = [
   },
 ]
 
-const mockStations = [
+const testMockStations = [
   {
     station_name: 'Test Station 1',
     station_phone: '303-330-0000',
@@ -94,4 +94,4 @@ const mockStations = [
   }
 ]
 
-module.exports = { mockCafes, mockStations}
+module.exports = { testMockCafes, testMockStations }

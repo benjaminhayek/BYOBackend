@@ -1,4 +1,5 @@
 const { mockCafes, mockStations } = require('../../../utils/seedMocks')
+const { fetchedStationCafes } = require('../../../utils/fetchedStationCafes')
 
 const createStations = (knex, station) => {
   return knex('stations').insert({
@@ -40,7 +41,7 @@ exports.seed = function(knex, Promise) {
   return knex('cafes').del()
     .then(() => knex('stations').del())
     .then(() => {
-      let stationPromises = mockStations.map(station => {
+      let stationPromises = fetchedStationCafes.map(station => {
         return createStations(knex, station);
       })
 

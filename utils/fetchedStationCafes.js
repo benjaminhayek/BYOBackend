@@ -1,4 +1,4 @@
-[
+export const fetchedStationCafes = [
   {
     "station_name": "Hyatt Regency - Denver",
     "station_phone": "303-486-4467",

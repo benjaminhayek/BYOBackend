@@ -77,7 +77,7 @@ app.put('/api/v1/stations/:station_id', async (request, response) => {
 		}))
 		.catch(error => {
 			if(!station.length) return response.status(404).json({ error: `Station with id of ${station_id} was not found.`});
-			else if (!newName) return response.status(422).json({ error: 'No station name provided' });
+			else if (!newName) return response.status(422).json({ error: 'No station name provided.' });
 		})
 })
 
@@ -86,7 +86,7 @@ app.delete('/api/v1/stations/:station_id', (request, response) => {
 	database('cafes').where('station_id', station_id).delete()
 		.then(() => database('stations').where('id', station_id).delete())
 		.then(stationId => response.status(200).json({
-			stationId,
+			id: stationId,
 			message: `Station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
@@ -105,6 +105,39 @@ app.get('/api/v1/stations/:station_id/cafes', (request, response) => {
 			error: error.message
 		}));
 })
+
+// In API docs, need to explain how to query db
+// app.get('/api/v1/cafes?cafe_name=CAFE+NAME+HERE' or CAFE%20NAME%20COFFEE)
+// where spaces are separated by + (plus) characters OR %20
+
+app.get('/api/v1/cafes', (request, response) => {
+	const { cafe_name } = request.query
+
+	database('cafes').where('cafe_name', cafe_name).select()
+		.then(cafes => {
+			const uniqueCafes = cafeCleanUp(cafes)
+			console.log(uniqueCafes)
+
+			response.status(200).json(uniqueCafes)
+		})
+		.catch(error => response.status(500).json({
+			error: error.message
+		}))
+})
+
+const cafeCleanUp = queriedCafes => {
+	return queriedCafes.reduce((uniqueCafes, cafe, index) => {
+		if (index === 0) uniqueCafes.push(cafe)
+
+		uniqueCafes.forEach(uCafe => {
+			if (uCafe.formatted_address !== cafe.formatted_address) {
+				uniqueCafes.push(cafe)
+			}
+		})
+
+		return uniqueCafes
+	}, [])
+}
 
 app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 	const cafe = request.body;
@@ -156,37 +189,28 @@ app.put('/api/v1/stations/:station_id/cafes/:cafe_id', async (request, response)
 		'id': cafe_id,
 		station_id
 	}).select()
-	const oldName = cafe[0].cafe_name
+	let oldName;
 
-	if(!cafe) return response.status(404).json({ error: `cafe with id of ${id} was not found.`});
-	else if (!newName) return response.status(422).json({ error: 'No cafe name provided' });
+	if (cafe.length) {
+		oldName = cafe[0].cafe_name
+	}
 
 	database('cafes').where('cafe_name', oldName).update('cafe_name', newName)
 		.then(cafe => response.status(202).json({
 			cafe,
-			message: `Edit successful.  Cafe with id of ${cafe_id} name changed from  ${oldName} to ${newName}.`}))
+			message: `Edit successful. Cafe with id of ${cafe_id} name changed from ${oldName} to ${newName}.`}))
+		.catch(error => {
+			if(!cafe.length) return response.status(404).json({ error: `Cafe with id of ${cafe_id} was not found.`});
+			else if (!newName) return response.status(422).json({ error: 'No cafe name provided.' });
+		})
 })
 
 app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 	const { cafe_id } = request.params
 	database('cafes').where('id', cafe_id).delete()
-		.then(() => response.status(200).json({
+		.then(cafeId => response.status(200).json({
+				id: cafeId,
 				message: `Cafe ${cafe_id} has been deleted.`
-		}))
-		.catch(error => response.status(500).json({
-				error: `Error deleting cafe: ${error.message}`
-		}))
-})
-
-app.delete('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
-	const { cafe_id, station_id } = request.params
-	database('cafes').where({
-		'id': cafe_id,
-		station_id
-	}).delete()
-		.then(cafe => response.status(200).json({
-				cafe,
-				message: `Cafe ${cafe_id} for station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
 				error: `Error deleting cafe: ${error.message}`

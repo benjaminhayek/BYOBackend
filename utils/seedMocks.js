@@ -58,7 +58,7 @@ const mockCafes = [
     cross_street: 'New Mexico Ave',
     formatted_address: '543 Front St. Denver, CO 80202',
     distance_in_meters: 333
-  },
+  }
 ]
 
 const mockStations = [
@@ -86,7 +86,7 @@ const mockStations = [
     zip_code: '80202',
     intersection_directions: 'Main and Grant',
     access_days_time: '9a-5p',
-    cafes: [mockCafes[3], mockCafes[4], mockCafes[5], mockCafes[1]]
+    cafes: [mockCafes[3], mockCafes[4], mockCafes[5]]
   }
 ]
 

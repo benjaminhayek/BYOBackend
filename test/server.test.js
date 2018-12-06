@@ -33,6 +33,7 @@ describe('Server file', () => {
           const result = response.body.length
           const expected = testMockStations.length
 
+          expect(error).to.be.null;
           expect(response).to.have.status(200);
           expect(result).to.equal(expected);
           done();
@@ -72,6 +73,7 @@ describe('Server file', () => {
 
     it('sends 404 for bad path and returns custom text', done => {
       const errorText = 'Sorry, the path you entered does not exist.'
+
       chai.request(app)
         .get('/api/v1/statios')
         .end((error, response) => {
@@ -104,6 +106,7 @@ describe('Server file', () => {
         .end((error, response) => {
           const result = response.body.length
 
+          expect(error).to.be.null;
           expect(response).to.have.status(200);
           expect(result).to.equal(1);
           done();
@@ -118,8 +121,39 @@ describe('Server file', () => {
         .put('/api/v1/stations/1')
         .send(editedStation)
         .end((error, response) => {
+          expect(error).to.be.null;
           expect(response).to.have.status(202);
           expect(response.body.message).to.equal(successMessage);
+          done();
+        })
+    })
+
+    it('PUT sends back custom 404 when id not found', done => {
+      const errorText = 'Station with id of 13 was not found.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/13')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.body.error).to.equal(errorText);
+          done();
+        })
+    })
+
+    it('PUT sends back 422 when no name provided not found', done => {
+      const errorText = 'Station with id of 13 was not found.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/13')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.body.error).to.equal(errorText);
           done();
         })
     })

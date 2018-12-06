@@ -57,7 +57,7 @@ app.get('/api/v1/stations/:station_id', (request, response) => {
 	database('stations').where('id', station_id).select()
 		.then(stations => response.status(200).json(stations))
 		.catch(error => response.status(500).json({
-			error: `Error fetching station: Station with id of ${station_id} does not exist.`
+			error: error.message
 		}));
 })
 
@@ -65,15 +65,23 @@ app.put('/api/v1/stations/:station_id', async (request, response) => {
 	const newName = request.body.station_name;
 	const { station_id } = request.params
 	const station = await database('stations').where('id', station_id).select()
-	const oldName = station[0].station_name
+	let oldName;
 
-	if(!station) return response.status(404).json({ error: `station with id of ${station_id} was not found.`});
-	else if (!newName) return response.status(422).json({ error: 'No station name provided' });
+	if (station.length) {
+		oldName = station[0].station_name
+	}
+	// if(!station) return response.status(404).json({ error: `station with id of ${station_id} was not found.`});
+	// else if (!newName) return response.status(422).json({ error: 'No station name provided' });
 
 	database('stations').where('station_name', oldName).update('station_name', newName)
 		.then(() => response.status(202).json({
 			message: `Edit successful. Station with id of ${station_id} name changed from ${oldName} to ${newName}.`
 		}))
+		.catch(error => {
+			// console.log()
+			if(!station.length) return response.status(404).json({ error: `Station with id of ${station_id} was not found.`});
+			else if (!newName) return response.status(422).json({ error: 'No station name provided' });
+		})
 })
 
 app.delete('/api/v1/stations/:station_id', (request, response) => {

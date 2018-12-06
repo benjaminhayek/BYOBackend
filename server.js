@@ -86,7 +86,7 @@ app.delete('/api/v1/stations/:station_id', (request, response) => {
 	database('cafes').where('station_id', station_id).delete()
 		.then(() => database('stations').where('id', station_id).delete())
 		.then(stationId => response.status(200).json({
-			stationId,
+			id: stationId,
 			message: `Station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
@@ -175,7 +175,8 @@ app.put('/api/v1/stations/:station_id/cafes/:cafe_id', async (request, response)
 app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 	const { cafe_id } = request.params
 	database('cafes').where('id', cafe_id).delete()
-		.then(() => response.status(200).json({
+		.then(cafeId => response.status(200).json({
+				id: cafeId,
 				message: `Cafe ${cafe_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
@@ -189,8 +190,8 @@ app.delete('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) =>
 		'id': cafe_id,
 		station_id
 	}).delete()
-		.then(cafe => response.status(200).json({
-				cafe,
+		.then(cafeId => response.status(200).json({
+				id: cafeId,
 				message: `Cafe ${cafe_id} for station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({

@@ -167,7 +167,7 @@ describe('Server file', () => {
         .send(deletedStation)
         .end((error, response) => {
           expect(response).to.have.status(200);
-          expect(response.body.stationId).to.equal(1);
+          expect(response.body.id).to.equal(1);
           expect(response.body.message).to.equal(successMessage);
           done();
         })
@@ -307,16 +307,31 @@ describe('Server file', () => {
         })
     })
 
-    it.skip('DELETE sends back a 200 status code and correct response object', done => {
+    it('DELETE sends back a 200 status code and correct response object', done => {
       const successMessage = 'Cafe 1 has been deleted.'
-      const deletedStation = testMockEditStations[0]
+      const deletedCafe = testMockEditCafes[0]
 
       chai.request(app)
-        .delete('/api/v1/stations/1')
-        .send(deletedStation)
+        .delete('/api/v1/cafes/1')
+        .send(deletedCafe)
         .end((error, response) => {
           expect(response).to.have.status(200);
-          expect(response.body.stationId).to.equal(1);
+          expect(response.body.id).to.equal(1);
+          expect(response.body.message).to.equal(successMessage);
+          done();
+        })
+    })
+
+    it('DELETE sends back a 200 status code and correct response object', done => {
+      const successMessage = 'Cafe 1 for station 1 has been deleted.'
+      const deletedCafe = testMockEditStations[0]
+
+      chai.request(app)
+        .delete('/api/v1/stations/1/cafes/1')
+        .send(deletedCafe)
+        .end((error, response) => {
+          expect(response).to.have.status(200);
+          expect(response.body.id).to.equal(1);
           expect(response.body.message).to.equal(successMessage);
           done();
         })

@@ -77,7 +77,7 @@ app.put('/api/v1/stations/:station_id', async (request, response) => {
 		}))
 		.catch(error => {
 			if(!station.length) return response.status(404).json({ error: `Station with id of ${station_id} was not found.`});
-			else if (!newName) return response.status(422).json({ error: 'No station name provided' });
+			else if (!newName) return response.status(422).json({ error: 'No station name provided.' });
 		})
 })
 
@@ -156,15 +156,20 @@ app.put('/api/v1/stations/:station_id/cafes/:cafe_id', async (request, response)
 		'id': cafe_id,
 		station_id
 	}).select()
-	const oldName = cafe[0].cafe_name
+	let oldName;
 
-	if(!cafe) return response.status(404).json({ error: `cafe with id of ${id} was not found.`});
-	else if (!newName) return response.status(422).json({ error: 'No cafe name provided' });
+	if (cafe.length) {
+		oldName = cafe[0].cafe_name
+	}
 
 	database('cafes').where('cafe_name', oldName).update('cafe_name', newName)
 		.then(cafe => response.status(202).json({
 			cafe,
-			message: `Edit successful.  Cafe with id of ${cafe_id} name changed from  ${oldName} to ${newName}.`}))
+			message: `Edit successful. Cafe with id of ${cafe_id} name changed from ${oldName} to ${newName}.`}))
+		.catch(error => {
+			if(!cafe.length) return response.status(404).json({ error: `Cafe with id of ${cafe_id} was not found.`});
+			else if (!newName) return response.status(422).json({ error: 'No cafe name provided.' });
+		})
 })
 
 app.delete('/api/v1/cafes/:cafe_id', (request, response) => {

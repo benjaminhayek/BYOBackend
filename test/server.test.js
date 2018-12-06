@@ -292,13 +292,13 @@ describe('Server file', () => {
         })
     })
 
-    it.skip('PUT sends back 422 when no name provided not found', done => {
+    it('PUT sends back 422 when no name provided not found', done => {
       const errorText = 'No cafe name provided.'
-      const editedStation = testMockEditStations[1]
+      const editedCafe = testMockEditCafes[1]
 
       chai.request(app)
-        .put('/api/v1/stations/1')
-        .send(editedStation)
+        .put('/api/v1/stations/1/cafes/1')
+        .send(editedCafe)
         .end((error, response) => {
           expect(error).to.be.null;
           expect(response).to.have.status(422);
@@ -308,7 +308,7 @@ describe('Server file', () => {
     })
 
     it.skip('DELETE sends back a 200 status code and correct response object', done => {
-      const successMessage = 'Station 1 has been deleted.'
+      const successMessage = 'Cafe 1 has been deleted.'
       const deletedStation = testMockEditStations[0]
 
       chai.request(app)

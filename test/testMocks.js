@@ -182,7 +182,6 @@ const testMockEditCafes = [
   },
   {
     station_id: 1,
-    cafe_name: 'Edit Test Cafe 2',
     street_address: '765 Front St.',
     city: 'Denver',
     state: 'CO',

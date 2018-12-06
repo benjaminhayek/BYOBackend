@@ -7,6 +7,7 @@ const app = require('../server');
 const config = require('../knexfile')['test'];
 const database = require('knex')(config);
 const { testMockStations, testMockCafes, testMockErrorStations, testMockEditStations, testMockErrorCafes, testMockEditCafes } = require('./testMocks');
+const { seedStations, seedCafes } = require('../utils/seedMocks')
 
 chai.use(chaiHttp)
 
@@ -190,10 +191,10 @@ describe('Server file', () => {
 
     it('GET sends back a 200 status code and correct response object', done => {
       chai.request(app)
-        .get('/api/v1/stations/1/cafes')
+        .get('/api/v1/stations/2/cafes')
         .end((error, response) => {
           const result = response.body.length
-          const expected = 3
+          const expected = 4
 
           expect(error).to.be.null;
           expect(response).to.have.status(200);

@@ -6,7 +6,7 @@ const expect = chai.expect;
 const app = require('../server');
 const config = require('../knexfile')['test'];
 const database = require('knex')(config);
-const { testMockStations, testMockCafes } = require('./testMocks');
+const { testMockStations, testMockCafes, testMockErrorStations } = require('./testMocks');
 
 chai.use(chaiHttp)
 
@@ -26,12 +26,13 @@ describe('Server file', () => {
     })
 
     it('GET sends back a 200 status code and correct response object', done => {
-      const result = response.body.length
-      const expected = testMockStations.length
 
       chai.request(app)
         .get('/api/v1/stations')
         .end((error, response) => {
+          const result = response.body.length
+          const expected = testMockStations.length
+
           expect(response).to.have.status(200);
           expect(result).to.equal(expected);
           done();
@@ -40,6 +41,7 @@ describe('Server file', () => {
 
     it('POST sends back 201 status code and correct response object', done => {
       const newStation = testMockStations[0]
+      const successMessage = 'Station "Test Station 1" successfully created!'
 
       chai.request(app)
         .post('/api/v1/stations')
@@ -48,22 +50,22 @@ describe('Server file', () => {
           expect(error).to.be.null;
           expect(response).to.have.status(201);
           expect(response.body.id).to.equal(3);
-          expect(response.body.message).to.equal('Station "Test Station 1" successfully created!');
+          expect(response.body.message).to.equal(successMessage);
           done();
         })
     })
 
     it('POST sends back 422 status code for improper formatting and correct response object', done => {
-      const newStation = testMockStations[0]
+      const newStation = testMockErrorStations[0]
+      const errorMessage = "Expected format: { station_name: <String>, station_phone: <String>, street_address: <String>, city: <Strin longitude: <Float>, intersection_directions: <String>, access_days_time: <String> }. You're missing the station_name property."
 
       chai.request(app)
         .post('/api/v1/stations')
         .send(newStation)
         .end((error, response) => {
           expect(error).to.be.null;
-          expect(response).to.have.status(201);
-          expect(response.body.id).to.equal(3);
-          expect(response.body.message).to.equal('Station "Test Station 1" successfully created!');
+          expect(response).to.have.status(422);
+          expect(response.body.error).to.equal(errorMessage);
           done();
         })
     })

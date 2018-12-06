@@ -218,7 +218,23 @@ describe('Server file', () => {
         })
     })
 
+    it.skip('POST sends back 422 status code for improper formatting', done => {
 
+    })
   })
 
+  describe('/api/v1/stations/:station_id/cafes', () => {
+    beforeEach(done => {
+      database.migrate.rollback()
+      .then(() => database.migrate.latest())
+      .then(() => database.seed.run())
+      .then(() => done())
+    })
+
+    after(done => {
+      database.migrate.rollback()
+        .then(() => console.log('Testing complete. Db rolled back.'))
+        .then(() => done())
+    })
+  })
 })

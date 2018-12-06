@@ -106,6 +106,19 @@ app.get('/api/v1/stations/:station_id/cafes', (request, response) => {
 		}));
 })
 
+// In API docs, need to explain how to query db
+// app.get('/api/v1/cafes?cafe_name=CAFE_NAME_HERE')
+
+app.get('/api/v1/cafes', (request, response) => {
+	const { cafe_name } = request.query
+
+	database('cafes').where('cafe_name', cafe_name).select()
+		.then(cafes => response.status(200).json(cafes))
+		.catch(error => response.status(500).json({
+			error: error.message
+		}))
+})
+
 app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 	const cafe = request.body;
 

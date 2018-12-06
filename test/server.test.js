@@ -265,7 +265,7 @@ describe('Server file', () => {
 
     it('PUT sends back a 202 status code and correct response object', done => {
       const successMessage = 'Edit successful. Cafe with id of 1 name changed from Cafe 1 to Edit Test Cafe 1.'
-      const editedCafe = testMockEditCafes[0]
+      const editedCafe = testMockCafes[0]
 
       chai.request(app)
         .put('/api/v1/stations/1/cafes/1')

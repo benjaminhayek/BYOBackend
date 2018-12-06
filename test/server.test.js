@@ -26,10 +26,14 @@ describe('Server file', () => {
     })
 
     it('GET sends back a 200 status code and correct response object', done => {
+      const result = response.body.length
+      const expected = testMockStations.length
+
       chai.request(app)
         .get('/api/v1/stations')
         .end((error, response) => {
           expect(response).to.have.status(200);
+          expect(result).to.equal(expected);
           done();
         })
     })
@@ -49,7 +53,22 @@ describe('Server file', () => {
         })
     })
 
-    it('sends 404 for bad path', done => {
+    it('POST sends back 422 status code for improper formatting and correct response object', done => {
+      const newStation = testMockStations[0]
+
+      chai.request(app)
+        .post('/api/v1/stations')
+        .send(newStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(201);
+          expect(response.body.id).to.equal(3);
+          expect(response.body.message).to.equal('Station "Test Station 1" successfully created!');
+          done();
+        })
+    })
+
+    it('sends 404 for bad path and returns custom text', done => {
       chai.request(app)
         .get('/api/v1/statios')
         .end((error, response) => {

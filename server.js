@@ -188,7 +188,7 @@ app.delete('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) =>
 })
 
 app.use((request, response, next) => {
-	response.status(404).send()
+	response.status(404).send('Sorry, the path you entered does not exist.')
 })
 
 app.listen(app.get('port'), () => {

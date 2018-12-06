@@ -1,5 +1,4 @@
-const { mockCafes, mockStations } = require('../../../utils/seedMocks')
-const { fetchedStationCafes } = require('../../../utils/fetchedStationCafes')
+const fetchedStationCafes = require('../../../utils/fetchedStationCafes')
 
 const createStations = (knex, station) => {
   return knex('stations').insert({

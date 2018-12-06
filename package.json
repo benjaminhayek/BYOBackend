@@ -17,6 +17,7 @@
     "pg": "^7.7.1"
   },
   "devDependencies": {
+    "node-fetch": "^2.3.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
     "mocha": "^5.2.0"

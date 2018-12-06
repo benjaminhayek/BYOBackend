@@ -7,9 +7,9 @@
 ## Recharge while you recharge! With Recharge API, you can query a sophisticated API to find Electric Vehicle (EV) charging stations and nearby cafes anywhere in the US or Canada. A Heroku-hosted PostgreSQL relational database and well-documented API built with Node.js, Express, and Knex.js.
 
 ## How to Use
-Recharge API on Heroku: [https://recharge-api.herokuapp.com/](https://recharge-api.herokuapp.com/).
+Recharge API on Heroku: [https://recharge-ev.herokuapp.com/](https://recharge-ev.herokuapp.com/).
 
-![A screen recording of the app](https://na.com "App Screen Recording")
+<!-- ![A screen recording of the app](https://na.com "App Screen Recording") -->
 
 ### Developers:
 #### Install and Start Server

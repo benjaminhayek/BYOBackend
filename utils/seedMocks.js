@@ -90,4 +90,4 @@ const mockStations = [
   }
 ]
 
-module.exports = { mockCafes, mockStations}
+module.exports = { mockCafes, mockStations }

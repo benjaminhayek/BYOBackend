@@ -173,4 +173,44 @@ describe('Server file', () => {
         })
     })
   })
+
+  describe('/api/v1/stations/:station_id/cafes', () => {
+    beforeEach(done => {
+      database.migrate.rollback()
+      .then(() => database.migrate.latest())
+      .then(() => database.seed.run())
+      .then(() => done())
+    })
+
+    after(done => {
+      database.migrate.rollback()
+      .then(() => database.seed.run())
+      .then(() => done())
+    })
+
+    it('GET sends back a 200 status code and correct response object', () => {
+      chai.request(app)
+        .get('/api/v1/stations/:station_id/cafes')
+        .end((error, response) => {
+          const result = response.body.length
+          const expected = testMockCafes.length
+
+          expect(error).to.be.null;
+          expect(response).to.have.status(200);
+          expect(result).to.equal(expected);
+          done();
+      })
+    });
+      
+    it('POST sends back a 201 status code and correct response object', () => {
+      chai.request(app)
+        .get('/api/v1/stations/:station_id/cafes')
+        .end((error, response) => {
+          
+        })
+    })
+
+
+  })
+
 })

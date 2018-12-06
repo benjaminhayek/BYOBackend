@@ -1,4 +1,9 @@
-[
+// const { fetchStations } = require('./apiHelper')
+
+// const fetchedStationCafes = async () => await fetchStations(80202)
+// console.log(fetchedStationCafes)
+
+const fetchedStationCafes = [
   {
     "station_name": "Hyatt Regency - Denver",
     "station_phone": "303-486-4467",
@@ -1435,3 +1440,5 @@
     ]
   }
 ]
+
+module.exports = fetchedStationCafes

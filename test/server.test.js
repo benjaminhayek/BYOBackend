@@ -6,7 +6,7 @@ const expect = chai.expect;
 const app = require('../server');
 const config = require('../knexfile')['test'];
 const database = require('knex')(config);
-const { mockStations, mockCafes } = require('./testMocks');
+const { testMockStations, testMockCafes, testMockErrorStations, testMockEditStations } = require('./testMocks');
 
 chai.use(chaiHttp)
 
@@ -25,17 +25,24 @@ describe('Server file', () => {
         .then(() => done())
     })
 
-    it('GET sends back a 200 status code', done => {
+    it('GET sends back a 200 status code and correct response object', done => {
+
       chai.request(app)
         .get('/api/v1/stations')
         .end((error, response) => {
+          const result = response.body.length
+          const expected = testMockStations.length
+
+          expect(error).to.be.null;
           expect(response).to.have.status(200);
+          expect(result).to.equal(expected);
           done();
         })
     })
 
-    it('POST sends back 201 status code', done => {
-      const newStation = mockStations[0]
+    it('POST sends back 201 status code and correct response object', done => {
+      const newStation = testMockStations[0]
+      const successMessage = 'Station "Test Station 1" successfully created!'
 
       chai.request(app)
         .post('/api/v1/stations')
@@ -44,10 +51,126 @@ describe('Server file', () => {
           expect(error).to.be.null;
           expect(response).to.have.status(201);
           expect(response.body.id).to.equal(3);
-          expect(response.body.message).to.equal('Station "Test Station 1" successfully created!');
+          expect(response.body.message).to.equal(successMessage);
           done();
         })
+    })
 
+    it('POST sends back 422 status code for improper formatting and correct response object', done => {
+      const newStation = testMockErrorStations[0]
+      const errorMessage = "Expected format: { station_name: <String>, station_phone: <String>, street_address: <String>, city: <Strin longitude: <Float>, intersection_directions: <String>, access_days_time: <String> }. You're missing the station_name property."
+
+      chai.request(app)
+        .post('/api/v1/stations')
+        .send(newStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(422);
+          expect(response.body.error).to.equal(errorMessage);
+          done();
+        })
+    })
+
+    it('sends 404 for bad path and returns custom text', done => {
+      const errorText = 'Sorry, the path you entered does not exist.'
+
+      chai.request(app)
+        .get('/api/v1/statios')
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.text).to.equal(errorText);
+          done();
+        })
+    })
+  })
+
+  describe('/api/v1/stations/:station_id', () => {
+    beforeEach(done => {
+      database.migrate.rollback()
+        .then(() => database.migrate.latest())
+        .then(() => database.seed.run())
+        .then(() => done())
+    })
+
+    after(done => {
+      database.migrate.rollback()
+        .then(() => console.log('Testing complete. Db rolled back.'))
+        .then(() => done())
+    })
+
+    it('GET sends back a 200 status code and correct response object', done => {
+
+      chai.request(app)
+        .get('/api/v1/stations/1')
+        .end((error, response) => {
+          const result = response.body.length
+
+          expect(error).to.be.null;
+          expect(response).to.have.status(200);
+          expect(result).to.equal(1);
+          done();
+        })
+    })
+
+    it('PUT sends back a 202 status code and correct response object', done => {
+      const successMessage = 'Edit successful. Station with id of 1 name changed from Station 1 to Edit Test Station 1.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/1')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(202);
+          expect(response.body.message).to.equal(successMessage);
+          done();
+        })
+    })
+
+    it('PUT sends back custom 404 when id not found', done => {
+      const errorText = 'Station with id of 13 was not found.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/13')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.body.error).to.equal(errorText);
+          done();
+        })
+    })
+
+    it('PUT sends back 422 when no name provided not found', done => {
+      const errorText = 'Station with id of 13 was not found.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/13')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.have.status(404);
+          expect(response.body.error).to.equal(errorText);
+          done();
+        })
+    })
+
+    it('DELETE sends back a 200 status code and correct response object', done => {
+      const successMessage = 'Station 1 has been deleted.'
+      const deletedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .delete('/api/v1/stations/1')
+        .send(deletedStation)
+        .end((error, response) => {
+          expect(response).to.have.status(200);
+          expect(response.body.stationId).to.equal(1);
+          expect(response.body.message).to.equal(successMessage);
+          done();
+        })
     })
   })
 })

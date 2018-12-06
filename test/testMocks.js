@@ -104,19 +104,22 @@ const testMockErrorStations = [
     street_address: '123 Main St.',
     intersection_directions: 'Main and Sherman',
     access_days_time: '24/7/365'
-  },
-  {
-    station_name: 'Test Station 2',
-    station_phone: '303-330-1111',
-    latitude: 15.23,
-    longitude: 20.45,
-    city: 'Denver',
-    state: 'CO',
-    street_address: '456 Main St.',
-    zip_code: '80202',
-    intersection_directions: 'Main and Grant',
-    access_days_time: '9a-5p'
   }
 ]
 
-module.exports = { testMockCafes, testMockStations, testMockErrorStations }
+const testMockEditStations = [
+  {
+    station_name: 'Edit Test Station 1',
+    station_phone: '303-330-0000',
+    latitude: 12.23,
+    longitude: 13.45,
+    city: 'Denver',
+    state: 'CO',
+    street_address: '123 Main St.',
+    zip_code: '80202',
+    intersection_directions: 'Main and Sherman',
+    access_days_time: '24/7/365'
+  }
+]
+
+module.exports = { testMockCafes, testMockStations, testMockErrorStations, testMockEditStations }

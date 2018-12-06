@@ -6,7 +6,7 @@ const expect = chai.expect;
 const app = require('../server');
 const config = require('../knexfile')['test'];
 const database = require('knex')(config);
-const { testMockStations, testMockCafes, testMockErrorStations } = require('./testMocks');
+const { testMockStations, testMockCafes, testMockErrorStations, testMockEditStations } = require('./testMocks');
 
 chai.use(chaiHttp)
 
@@ -71,12 +71,55 @@ describe('Server file', () => {
     })
 
     it('sends 404 for bad path and returns custom text', done => {
+      const errorText = 'Sorry, the path you entered does not exist.'
       chai.request(app)
         .get('/api/v1/statios')
         .end((error, response) => {
           expect(error).to.be.null;
           expect(response).to.have.status(404);
-          expect(response.text).to.equal('Sorry, the path you entered does not exist.');
+          expect(response.text).to.equal(errorText);
+          done();
+        })
+    })
+  })
+
+  describe('/api/v1/stations/:station_id', () => {
+    beforeEach(done => {
+      database.migrate.rollback()
+        .then(() => database.migrate.latest())
+        .then(() => database.seed.run())
+        .then(() => done())
+    })
+
+    after(done => {
+      database.migrate.rollback()
+        .then(() => console.log('Testing complete. Db rolled back.'))
+        .then(() => done())
+    })
+
+    it('GET sends back a 200 status code and correct response object', done => {
+
+      chai.request(app)
+        .get('/api/v1/stations/1')
+        .end((error, response) => {
+          const result = response.body.length
+
+          expect(response).to.have.status(200);
+          expect(result).to.equal(1);
+          done();
+        })
+    })
+
+    it('PUT sends back a 202 status code and correct response object', done => {
+      const successMessage = 'Edit successful. Station with id of 1 name changed from Station 1 to Edit Test Station 1.'
+      const editedStation = testMockEditStations[0]
+
+      chai.request(app)
+        .put('/api/v1/stations/1')
+        .send(editedStation)
+        .end((error, response) => {
+          expect(response).to.have.status(202);
+          expect(response.body.message).to.equal(successMessage);
           done();
         })
     })

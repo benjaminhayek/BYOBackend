@@ -70,15 +70,12 @@ app.put('/api/v1/stations/:station_id', async (request, response) => {
 	if (station.length) {
 		oldName = station[0].station_name
 	}
-	// if(!station) return response.status(404).json({ error: `station with id of ${station_id} was not found.`});
-	// else if (!newName) return response.status(422).json({ error: 'No station name provided' });
 
 	database('stations').where('station_name', oldName).update('station_name', newName)
 		.then(() => response.status(202).json({
 			message: `Edit successful. Station with id of ${station_id} name changed from ${oldName} to ${newName}.`
 		}))
 		.catch(error => {
-			// console.log()
 			if(!station.length) return response.status(404).json({ error: `Station with id of ${station_id} was not found.`});
 			else if (!newName) return response.status(422).json({ error: 'No station name provided' });
 		})

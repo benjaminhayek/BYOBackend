@@ -184,29 +184,37 @@ describe('Server file', () => {
 
     after(done => {
       database.migrate.rollback()
-      .then(() => database.seed.run())
-      .then(() => done())
+        .then(() => console.log('Testing complete. Db rolled back.'))
+        .then(() => done())
     })
 
-    it('GET sends back a 200 status code and correct response object', () => {
+    it('GET sends back a 200 status code and correct response object', done => {
       chai.request(app)
-        .get('/api/v1/stations/:station_id/cafes')
+        .get('/api/v1/stations/1/cafes')
         .end((error, response) => {
           const result = response.body.length
-          const expected = testMockCafes.length
+          const expected = 3
 
           expect(error).to.be.null;
           expect(response).to.have.status(200);
           expect(result).to.equal(expected);
           done();
       })
-    });
+    })
       
-    it('POST sends back a 201 status code and correct response object', () => {
+    it('POST sends back a 201 status code and correct response object', done => {
+      const newCafe = testMockCafes[0]
+      const successMessage = 'Cafe "Test Cafe 1" successfully created!'
+
       chai.request(app)
-        .get('/api/v1/stations/:station_id/cafes')
+        .post('/api/v1/stations/1/cafes')
+        .send(newCafe)
         .end((error, response) => {
-          
+          expect(error).to.be.null;
+          expect(response).to.have.status(201);
+          expect(response.body.id).to.equal(8);
+          expect(response.body.message).to.equal(successMessage)
+          done()
         })
     })
 

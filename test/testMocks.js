@@ -64,7 +64,7 @@ const testMockCafes = [
     cross_street: 'New Mexico Ave',
     formatted_address: '543 Front St. Denver, CO 80202',
     distance_in_meters: 333
-  },
+  }
 ]
 
 const testMockStations = [

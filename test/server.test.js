@@ -324,7 +324,7 @@ describe('Server file', () => {
 
     it('DELETE sends back a 200 status code and correct response object', done => {
       const successMessage = 'Cafe 1 for station 1 has been deleted.'
-      const deletedCafe = testMockEditStations[0]
+      const deletedCafe = testMockEditCafes[0]
 
       chai.request(app)
         .delete('/api/v1/stations/1/cafes/1')

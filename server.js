@@ -107,17 +107,37 @@ app.get('/api/v1/stations/:station_id/cafes', (request, response) => {
 })
 
 // In API docs, need to explain how to query db
-// app.get('/api/v1/cafes?cafe_name=CAFE_NAME_HERE')
+// app.get('/api/v1/cafes?cafe_name=CAFE+NAME+HERE' or CAFE%20NAME%20COFFEE)
+// where spaces are separated by + (plus) characters OR %20
 
 app.get('/api/v1/cafes', (request, response) => {
 	const { cafe_name } = request.query
 
 	database('cafes').where('cafe_name', cafe_name).select()
-		.then(cafes => response.status(200).json(cafes))
+		.then(cafes => {
+			const uniqueCafes = cafeCleanUp(cafes)
+			console.log(uniqueCafes)
+
+			response.status(200).json(uniqueCafes)
+		})
 		.catch(error => response.status(500).json({
 			error: error.message
 		}))
 })
+
+const cafeCleanUp = queriedCafes => {
+	return queriedCafes.reduce((uniqueCafes, cafe, index) => {
+		if (index === 0) uniqueCafes.push(cafe)
+
+		uniqueCafes.forEach(uCafe => {
+			if (uCafe.formatted_address !== cafe.formatted_address) {
+				uniqueCafes.push(cafe)
+			}
+		})
+
+		return uniqueCafes
+	}, [])
+}
 
 app.post('/api/v1/stations/:station_id/cafes', (request, response) => {
 	const cafe = request.body;
@@ -191,21 +211,6 @@ app.delete('/api/v1/cafes/:cafe_id', (request, response) => {
 		.then(cafeId => response.status(200).json({
 				id: cafeId,
 				message: `Cafe ${cafe_id} has been deleted.`
-		}))
-		.catch(error => response.status(500).json({
-				error: `Error deleting cafe: ${error.message}`
-		}))
-})
-
-app.delete('/api/v1/stations/:station_id/cafes/:cafe_id', (request, response) => {
-	const { cafe_id, station_id } = request.params
-	database('cafes').where({
-		'id': cafe_id,
-		station_id
-	}).delete()
-		.then(cafeId => response.status(200).json({
-				id: cafeId,
-				message: `Cafe ${cafe_id} for station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
 				error: `Error deleting cafe: ${error.message}`

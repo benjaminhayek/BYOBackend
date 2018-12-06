@@ -78,9 +78,10 @@ app.put('/api/v1/stations/:station_id', async (request, response) => {
 
 app.delete('/api/v1/stations/:station_id', (request, response) => {
 	const { station_id } = request.params
-	database('stations').where('id', station_id).delete()
-		.then(station => response.status(200).json({
-			station,
+	database('cafes').where('station_id', station_id).delete()
+		.then(() => database('stations').where('id', station_id).delete())
+		.then(stationId => response.status(200).json({
+			stationId,
 			message: `Station ${station_id} has been deleted.`
 		}))
 		.catch(error => response.status(500).json({
